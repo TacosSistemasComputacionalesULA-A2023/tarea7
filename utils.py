@@ -1,4 +1,4 @@
-import gymnasium as gym
+import gym
 from agent import QLearning
 from agent import DoubleQLearning
 
