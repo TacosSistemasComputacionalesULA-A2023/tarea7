@@ -1,24 +1,6 @@
-import gym
 import csv
-import gym_environments
-from agent import QLearning
-from agent import DoubleQLearning
-
-def train(env, agent, episodes):
-    total_reward = 0
-    for episode in range(episodes + 1):
-        print(episode)
-        observation, _ = env.reset()
-        terminated, truncated = False, False
-        
-        while not (terminated or truncated):
-            action = agent.get_action(observation, "epsilon-greedy")
-            new_observation, reward, terminated, truncated, _ = env.step(action)
-            total_reward += reward
-            agent.update(observation, action, new_observation, reward, terminated)
-            observation = new_observation
-
-    return total_reward
+import multiprocessing
+from utils import Arguments, run_training
 
 # Define the environment names
 env_names = ["CliffWalking-v0", "Taxi-v3"]
@@ -38,48 +20,32 @@ num_episodes_range = range(1, 501)
 results = []
 
 # Iterate through all combinations of alpha, gamma, epsilon values, algorithms, and number of episodes for each environment
+arguments = []
 for env_name in env_names:
     for alpha in alpha_range:
         for gamma in gamma_range:
             for epsilon in epsilon_range:
                 for algorithm in algorithms:
                     for num_episodes in num_episodes_range:
-                        # Create the environment
-                        env = gym.make(env_name)
+                        arguments.append(Arguments(
+                            env_name,
+                            algorithm,
+                            num_episodes,
+                            alpha,
+                            gamma,
+                            epsilon,
+                        ))
 
-                        # Run your reinforcement learning algorithm here
-                        total_reward = 0
-                        if algorithm == 'Q-learning':
-                            # Run Q-learning algorithm
-                            agent = QLearning(
-                                env.observation_space.n, env.action_space.n, alpha=alpha, gamma=gamma, epsilon=epsilon
-                            )
-
-                            total_reward = train(env, agent, num_episodes)
-                            agent.reset()
-
-                        elif algorithm == 'DoubleQ-learning':
-                            # Run DoubleQ-learning algorithm
-                            agent = DoubleQLearning(
-                                env.observation_space.n, env.action_space.n, alpha=alpha, gamma=gamma, epsilon=epsilon
-                            )
-
-                            total_reward = train(env, agent, num_episodes)
-                            agent.reset()
-                            
-
-                        # Add the results to the list
-                        results.append((env_name, algorithm, alpha, gamma, epsilon, num_episodes, total_reward))
-
-                        # Close the environment
-                        env.close()
+p = multiprocessing.Pool(processes=multiprocessing.cpu_count())
+result = p.map_async(run_training, arguments)
+values = result.get()
 
 # Sort the results by total reward in descending order
-results.sort(key=lambda x: x[6], reverse=True)
+values.sort(key=lambda x: x[6], reverse=True)
 
 # Save the results to a CSV file
 with open('results.csv', 'w', newline='') as csvfile:
     writer = csv.writer(csvfile)
-    writer.writerow(['env_name', 'algorithm', 'alpha', 'gamma', 'epsilon', 'num_episodes', 'total_reward'])
-    writer.writerows(results)
-   
+    writer.writerow(['env_name', 'algorithm', 'alpha', 'gamma',
+                    'epsilon', 'num_episodes', 'total_reward'])
+    writer.writerows(values)

@@ -1,0 +1,5 @@
+env_name,algorithm,alpha,gamma,epsilon,num_episodes,total_reward
+Taxi-v3,DoubleQ-learning,1,1,1,1,-1543
+Taxi-v3,Q-learning,1,1,1,1,-1633
+CliffWalking-v0,DoubleQ-learning,1,1,1,1,-124694
+CliffWalking-v0,Q-learning,1,1,1,1,-168557
