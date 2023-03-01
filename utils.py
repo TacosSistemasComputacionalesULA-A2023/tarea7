@@ -48,7 +48,7 @@ def run_training(arguments: Arguments):
         )
 
         total_reward = train(env, agent, arguments.num_episodes)
-        agent.reset()
+        
 
     elif arguments.algorithm == 'DoubleQ-learning':
         # Run DoubleQ-learning algorithm
@@ -61,7 +61,7 @@ def run_training(arguments: Arguments):
         )
 
         total_reward = train(env, agent, arguments.num_episodes)
-        agent.reset()
+        
 
     # Close the environment
     env.close()
