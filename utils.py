@@ -4,7 +4,7 @@ from agent import DoubleQLearning
 from threading import Lock
 import os
 
-NUM_EPISODES = 10
+NUM_EPISODES = 500
 
 class Arguments:
     def __init__(self, env_name, algorithm, alpha, gamma, epsilon) -> None:

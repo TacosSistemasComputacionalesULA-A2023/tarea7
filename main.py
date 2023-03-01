@@ -3,6 +3,7 @@ import multiprocessing
 from utils import Arguments, run_training, init_data, NUM_EPISODES
 import time
 import datetime
+import numpy as np
 
 
 if __name__ == '__main__':
@@ -12,9 +13,9 @@ if __name__ == '__main__':
     env_names = ["CliffWalking-v0", "Taxi-v3"]
 
     # Define the range of values for alpha, gamma, and epsilon
-    alpha_range = [0.5]
-    gamma_range = [0.9]
-    epsilon_range = [0.1]
+    alpha_range = [i for i in np.arange(0, 0.9, 0.3)]
+    gamma_range = [i for i in np.arange(0, 0.9, 0.3)]
+    epsilon_range = [i for i in np.arange(0, 0.9, 0.3)]
 
     # Define the reinforcement learning algorithms
     algorithms = ['Q-learning', 'DoubleQ-learning']
