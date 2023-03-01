@@ -4,11 +4,12 @@ from agent import DoubleQLearning
 from threading import Lock
 import os
 
+NUM_EPISODES = 10
+
 class Arguments:
-    def __init__(self, env_name, algorithm, num_episodes, alpha, gamma, epsilon) -> None:
+    def __init__(self, env_name, algorithm, alpha, gamma, epsilon) -> None:
         self.env_name = env_name
         self.algorithm = algorithm
-        self.num_episodes = num_episodes
         self.alpha = alpha
         self.gamma = gamma
         self.epsilon = epsilon
@@ -21,20 +22,25 @@ def init_data(experiments_counter, expirements_num):
 
 def train(env, agent, episodes):
     total_reward = 0
+    end_episode_reward = []
     for episode in range(episodes + 1):
         observation, _ = env.reset()
         terminated, truncated = False, False
 
+        episode_reward = 0
         while not (terminated or truncated):
             action = agent.get_action(observation, "epsilon-greedy")
             new_observation, reward, terminated, truncated, _ = env.step(
                 action)
-            total_reward += reward
+            episode_reward += reward
             agent.update(observation, action,
                          new_observation, reward, terminated)
             observation = new_observation
+        
+        end_episode_reward.append(episode_reward)
+        total_reward += episode_reward
 
-    return total_reward
+    return total_reward, end_episode_reward
 
 
 def run_training(arguments: Arguments):
@@ -43,6 +49,7 @@ def run_training(arguments: Arguments):
 
     # Run your reinforcement learning algorithm here
     total_reward = 0
+    end_episode_reward = []
     if arguments.algorithm == 'Q-learning':
         # Run Q-learning algorithm
         agent = QLearning(
@@ -53,7 +60,7 @@ def run_training(arguments: Arguments):
             epsilon=arguments.epsilon
         )
 
-        total_reward = train(env, agent, arguments.num_episodes)
+        total_reward, end_episode_reward = train(env, agent, NUM_EPISODES)
         
 
     elif arguments.algorithm == 'DoubleQ-learning':
@@ -66,7 +73,7 @@ def run_training(arguments: Arguments):
             epsilon=arguments.epsilon
         )
 
-        total_reward = train(env, agent, arguments.num_episodes)
+        total_reward, end_episode_reward = train(env, agent, NUM_EPISODES)
         
 
     # Close the environment
@@ -80,4 +87,4 @@ def run_training(arguments: Arguments):
 
     # Add the results to the list
     return (arguments.env_name, arguments.algorithm, arguments.alpha, 
-            arguments.gamma, arguments.epsilon, arguments.num_episodes, total_reward)
+            arguments.gamma, arguments.epsilon, NUM_EPISODES, total_reward, end_episode_reward)
