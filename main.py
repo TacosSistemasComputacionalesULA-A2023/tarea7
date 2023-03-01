@@ -3,7 +3,6 @@ import multiprocessing
 from utils import Arguments, run_training, init_data, NUM_EPISODES
 import time
 import datetime
-import numpy as np
 
 
 if __name__ == '__main__':
