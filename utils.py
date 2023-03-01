@@ -1,6 +1,8 @@
 import gym
 from agent import QLearning
 from agent import DoubleQLearning
+from threading import Lock
+import os
 
 class Arguments:
     def __init__(self, env_name, algorithm, num_episodes, alpha, gamma, epsilon) -> None:
@@ -10,12 +12,16 @@ class Arguments:
         self.alpha = alpha
         self.gamma = gamma
         self.epsilon = epsilon
+        
 
+def init_data(experiments_counter, expirements_num):
+    global experiments, total_experiments
+    total_experiments = expirements_num
+    experiments = experiments_counter
 
 def train(env, agent, episodes):
     total_reward = 0
     for episode in range(episodes + 1):
-        print(episode)
         observation, _ = env.reset()
         terminated, truncated = False, False
 
@@ -65,6 +71,12 @@ def run_training(arguments: Arguments):
 
     # Close the environment
     env.close()
+    global experiments
+    global total_experiments
+    with experiments.get_lock():
+        experiments.value -= 1
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print(f'Experiments left: {experiments.value}/{total_experiments}')
 
     # Add the results to the list
     return (arguments.env_name, arguments.algorithm, arguments.alpha, 
