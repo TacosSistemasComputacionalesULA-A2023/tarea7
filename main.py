@@ -13,9 +13,9 @@ if __name__ == '__main__':
     env_names = ["CliffWalking-v0", "Taxi-v3"]
 
     # Define the range of values for alpha, gamma, and epsilon
-    alpha_range = [i for i in np.arange(0, 0.9, 0.3)]
-    gamma_range = [i for i in np.arange(0, 0.9, 0.3)]
-    epsilon_range = [i for i in np.arange(0, 0.9, 0.3)]
+    alpha_range = [0.3, 0.6, 0.9]
+    gamma_range = [0.3, 0.6, 0.9]
+    epsilon_range = [0.3, 0.6, 0.9]
 
     # Define the reinforcement learning algorithms
     algorithms = ['Q-learning', 'DoubleQ-learning']
