@@ -20,7 +20,7 @@ if __name__ == '__main__':
     algorithms = ['Q-learning', 'DoubleQ-learning']
 
     # Define the range of values for the number of episodes
-    num_episodes_range = range(1, 500, 10)
+    num_episodes_range = range(1, 500, 20)
 
     # Create a list to store the results
     results = []
