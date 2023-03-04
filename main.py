@@ -12,9 +12,9 @@ if __name__ == '__main__':
     env_names = ["CliffWalking-v0", "Taxi-v3"]
 
     # Define the range of values for alpha, gamma, and epsilon
-    alpha_range = [0.3, 0.6, 0.9]
-    gamma_range = [0.3, 0.6, 0.9]
-    epsilon_range = [0.3, 0.6, 0.9]
+    alpha_range = list(map(lambda x: x / 10, range(1, 10, 1)))
+    gamma_range = [0.1, 0.5, 0.9]
+    epsilon_range = [0.1]
 
     # Define the reinforcement learning algorithms
     algorithms = ['Q-learning', 'DoubleQ-learning']
